@@ -1,0 +1,1104 @@
+/* -------- PALETA ORIÉNTESE --------
+   Los mismos colores de la app móvil, como variables para que el tema viva en
+   un solo sitio. */
+:root {
+  --navy: #123b94;
+  --navy-dark: #0e2e73;
+  --gold: #f6b71b;
+  --bg: #f4f6fb;
+  --text: #16305f;
+  --muted: #98a4bd;
+  --border: #e4e9f2;
+  --chip-off: #eaeef6;
+  --card: #ffffff;
+  --verde: #2e9e5b;
+  --rojo: #e23b3b;
+
+  --sombra-suave: 0 2px 10px rgba(18, 59, 148, 0.08);
+  --sombra-media: 0 6px 20px rgba(18, 59, 148, 0.12);
+  --sombra-fuerte: 0 10px 34px rgba(16, 32, 70, 0.18);
+
+  --panel-ancho: 390px;
+
+  color-scheme: light;
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial,
+    sans-serif;
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* -------- ESTRUCTURA -------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg);
+}
+
+.cuerpo {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  padding: 14px 16px 16px;
+  min-height: 0;
+}
+
+.panel {
+  width: var(--panel-ancho);
+  flex-shrink: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+}
+
+.mapa-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--sombra-media);
+  background: #dfe5ef;
+}
+
+/* Solo el lienzo del mapa llena el contenedor. Las capas flotantes que van
+   encima (avisos, cargando, tarjetas) se colocan solas: si se las estira, la
+   tarjeta de la ruta acaba tapando el mapa entero. */
+.mapa-wrap > div:not(.avisos):not(.loader-overlay):not(.tarjeta) {
+  height: 100%;
+}
+
+/* -------- CABECERA -------- */
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: var(--navy);
+  color: #fff;
+  padding: 16px 22px 26px;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+  box-shadow: var(--sombra-media);
+  position: relative;
+  z-index: 30;
+}
+
+.menu-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s ease;
+}
+
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.logo-tile {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.logo-tile img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.marca {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.marca span {
+  color: var(--gold);
+}
+
+.lema {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  color: var(--gold);
+  margin: 5px 0 0;
+}
+
+/* -------- TARJETAS DEL PANEL -------- */
+.seccion {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--sombra-suave);
+  margin-bottom: 14px;
+}
+
+.seccion-titulo {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+
+.mi-ubicacion-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e9eefa;
+  color: var(--navy);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  transition: background 0.15s ease;
+}
+
+.mi-ubicacion-btn:hover:not(:disabled) {
+  background: #dbe4f7;
+}
+
+.buscar-ruta-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 12px;
+  transition: background 0.15s ease;
+}
+
+.buscar-ruta-btn:hover:not(:disabled) {
+  background: var(--navy-dark);
+}
+
+/* -------- BUSCADOR DE LUGARES -------- */
+.buscador {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.buscador-icono {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.buscador input {
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  padding: 0 14px 0 42px;
+  font-size: 15px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.buscador input:focus {
+  border-color: var(--navy);
+}
+
+.buscador input::placeholder {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sugerencias {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--sombra-media);
+  overflow: hidden;
+  z-index: 40;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.sugerencia {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.sugerencia:last-child {
+  border-bottom: none;
+}
+
+.sugerencia:hover,
+.sugerencia.resaltada {
+  background: #f2f5fc;
+}
+
+.sugerencia-vacia {
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* -------- DESPLEGABLES (ver rutas / taxis) -------- */
+.dropdown-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 50px;
+  text-align: left;
+}
+
+.dropdown-btn:hover {
+  border-color: var(--navy);
+}
+
+.dropdown-btn-texto {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-btn-texto.vacio {
+  color: var(--muted);
+}
+
+.chevron {
+  font-size: 11px;
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.dropdown-lista {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  margin-top: 6px;
+  overflow: hidden;
+  box-shadow: var(--sombra-suave);
+}
+
+.dropdown-buscador {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dropdown-buscador input {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  background: var(--bg);
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.dropdown-items {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dropdown-item:hover {
+  background: #f7f9fe;
+}
+
+.dropdown-item.activo {
+  background: #f2f5fc;
+}
+
+.dropdown-item span.nombre {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-item.apagado {
+  color: var(--muted);
+}
+
+.punto-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.taxi-km {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* -------- AVISO SIN INTERNET -------- */
+.sin-red {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--sombra-suave);
+}
+
+.sin-red-icono {
+  font-size: 26px;
+}
+
+.sin-red h3 {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--text);
+  margin: 6px 0;
+}
+
+.sin-red p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 18px;
+  margin: 0 0 6px;
+}
+
+.sin-red p.fuerte {
+  color: var(--text);
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.sin-red b {
+  font-weight: 900;
+  color: var(--navy);
+}
+
+/* -------- AVISOS FLOTANTES SOBRE EL MAPA -------- */
+.avisos {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 7px 12px;
+  box-shadow: var(--sombra-suave);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 15px;
+  max-width: 560px;
+}
+
+.aviso.alerta {
+  border-color: var(--rojo);
+  background: rgba(255, 246, 246, 0.96);
+}
+
+.aviso b {
+  font-weight: 900;
+  color: var(--navy);
+}
+
+.aviso.alerta b {
+  color: var(--rojo);
+}
+
+/* -------- CARGANDO -------- */
+.loader-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(18, 59, 148, 0.12);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.loader-card {
+  background: #fff;
+  padding: 22px 26px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--sombra-fuerte);
+}
+
+.loader-texto {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 4px solid var(--chip-off);
+  border-top-color: var(--navy);
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------- TARJETA FLOTANTE (plan / pasos / info) -------- */
+.tarjeta {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  max-width: 620px;
+  /* Como mucho la mitad del mapa: el recorrido siempre se sigue viendo. */
+  max-height: min(52%, 420px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 16px;
+  border-radius: 20px;
+  box-shadow: var(--sombra-fuerte);
+  z-index: 15;
+  transition: max-height 0.18s ease;
+}
+
+/* Minimizada: solo se ve la cabecera. */
+.tarjeta.minimizada {
+  max-height: none;
+}
+
+.tarjeta-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-shrink: 0;
+}
+
+/* El bloque del título es el botón grande para plegar y desplegar. */
+.tarjeta-toggle {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  padding: 0;
+}
+
+.tarjeta-franja {
+  width: 11px;
+  height: 32px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.tarjeta-titulo {
+  display: block;
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tarjeta-sub {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+
+.tarjeta-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.tarjeta-btn:hover {
+  background: var(--chip-off);
+  color: var(--navy);
+}
+
+.opciones {
+  margin-top: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: #fff;
+}
+
+.opcion:hover {
+  background: #f7f9fe;
+}
+
+.opcion-punto {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.opcion-nombre {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opcion-meta {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.btn-principal {
+  width: 100%;
+  flex-shrink: 0;
+  margin-top: 12px;
+  height: 47px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.btn-principal:hover:not(:disabled) {
+  background: var(--navy-dark);
+}
+
+.pasos {
+  margin-top: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-secundario {
+  flex: 1;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--navy);
+  font-size: 12.5px;
+  font-weight: 800;
+  transition: background 0.15s ease;
+}
+
+.btn-secundario:hover {
+  background: var(--chip-off);
+}
+
+.paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.paso-icono {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.paso-texto {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 18px;
+}
+
+/* -------- MARCADORES -------- */
+.marcador-globo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 220px;
+  cursor: grab;
+}
+
+.marcador-burbuja {
+  background: #fff;
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 6px 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+}
+
+.marcador-etiqueta {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  margin-bottom: 1px;
+}
+
+.marcador-texto {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.marcador-punta {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 9px solid;
+  margin-top: -1px;
+}
+
+.marcador-mini {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.parada-badge {
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.punto-usuario {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1a73e8;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.35);
+}
+
+/* -------- MENÚ LATERAL -------- */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+}
+
+.drawer-fondo {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.drawer-panel {
+  position: relative;
+  width: 260px;
+  height: 100%;
+  background: #fff;
+  padding: 26px 16px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+  animation: entrar-izq 0.18s ease-out;
+}
+
+@keyframes entrar-izq {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+.drawer-titulo {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin: 0 0 14px 6px;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 14px 12px;
+  border-radius: 14px;
+  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.drawer-item:hover {
+  background: var(--bg);
+}
+
+.drawer-item.activo {
+  background: #e9eefa;
+  color: var(--navy);
+}
+
+.drawer-item-icono {
+  font-size: 20px;
+}
+
+/* -------- DIÁLOGO (reemplaza Alert.alert) -------- */
+.dialogo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 32, 70, 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.dialogo {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--sombra-fuerte);
+  animation: aparecer 0.15s ease-out;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+.dialogo h2 {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.dialogo p {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 20px;
+  margin: 0 0 18px;
+}
+
+.dialogo button {
+  width: 100%;
+  height: 46px;
+  border-radius: 13px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.dialogo button:hover {
+  background: var(--navy-dark);
+}
+
+/* -------- PANTALLA DE ERROR DE CONFIGURACIÓN -------- */
+.config-error {
+  max-width: 560px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--sombra-media);
+}
+
+.config-error h1 {
+  font-size: 20px;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+.config-error p,
+.config-error li {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 21px;
+}
+
+.config-error code {
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 13px;
+  color: var(--navy);
+}
+
+/* -------- RESPONSIVE --------
+   En pantallas angostas la app se apila como en el móvil: primero los
+   controles, el mapa debajo ocupando el resto. */
+@media (max-width: 980px) {
+  .cuerpo {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .panel {
+    width: 100%;
+    max-height: 42%;
+    flex-shrink: 1;
+    padding-right: 0;
+  }
+
+  .mapa-wrap {
+    min-height: 300px;
+  }
+
+  .cabecera {
+    padding: 14px 16px 22px;
+  }
+
+  .avisos {
+    right: 10px;
+  }
+
+  .aviso {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 520px) {
+  .marca {
+    font-size: 20px;
+  }
+
+  .logo-tile {
+    width: 44px;
+    height: 44px;
+  }
+
+  .logo-tile img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tarjeta {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    padding: 14px;
+  }
+}
+
+/* -------- PANTALLA DE CARGA INICIAL -------- */
+.cargando-app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* -------- AVISO DE UBICACIÓN NO DISPONIBLE -------- */
+.nota-ubicacion {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #fff8e8;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 17px;
+  color: var(--text);
+}
+
+.enlace {
+  padding: 0;
+  font: inherit;
+  font-weight: 800;
+  color: var(--navy);
+  text-decoration: underline;
+}
+
+/* -------- TAXIS COLECTIVOS: REGLA DEL PARADERO -------- */
+.nota-taxi {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #fff8e8;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 17px;
+  color: var(--text);
+}
+
+.nota-taxi b {
+  font-weight: 900;
+  color: var(--navy);
+}
+
+.btn-secundario {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: 1.5px solid var(--navy);
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 10px;
+  background: #fff;
+  transition: background 0.15s ease;
+}
+
+.btn-secundario:hover {
+  background: #e9eefa;
+}
+
+/* El paradero se distingue del "Inicio" de los buses: allí el marcador solo
+   dice por dónde arranca el trazado; aquí es una instrucción. */
+.paradero-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 11px;
+  border: 2px solid #fff;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 11.5px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

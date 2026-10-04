@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+# La clave de Google no va al repositorio: cada quien pone la suya en .env
+.env
+.env.*
+!.env.example
+
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
