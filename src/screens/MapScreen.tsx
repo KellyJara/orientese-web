@@ -98,6 +98,9 @@ export default function MapScreen({ rutas: routes, taxis: rutasDeTaxi }: Props) 
   // el pin y no lo que el usuario va escribiendo.
   const [origenEtiqueta, setOrigenEtiqueta] = useState("");
   const [destinoEtiqueta, setDestinoEtiqueta] = useState("");
+  // En el celular el buscador se pliega a una línea al encontrar rutas, para
+  // dejarle la pantalla al mapa. En escritorio el CSS lo ignora.
+  const [buscadorPlegado, setBuscadorPlegado] = useState(false);
   // El navegador ubicó al usuario fuera de Rionegro: se avisa de forma
   // permanente, porque sin un origen dentro del municipio no hay ruta.
   const [ubicacionFueraDeZona, setUbicacionFueraDeZona] = useState(false);
@@ -383,6 +386,7 @@ export default function MapScreen({ rutas: routes, taxis: rutasDeTaxi }: Props) 
         setSelectedRoutes(nuevoPlan.opciones.map((o) => String(o.feature.id)));
       }
       setSelectedTripRouteId(primera.id);
+      setBuscadorPlegado(true);
       // Encuadra la zona origen–destino para explorar las opciones en el mapa.
       encuadrar(map, [oLoc, dLoc]);
     } else {
@@ -625,7 +629,25 @@ export default function MapScreen({ rutas: routes, taxis: rutasDeTaxi }: Props) 
           {/* PÁGINA: PLANEAR VIAJE */}
           {pagina === "viaje" &&
             (hayInternet ? (
-              <div className="seccion">
+              <div
+                className={`seccion${
+                  buscadorPlegado && (plan || rutaElegida) ? " resumida" : ""
+                }`}
+              >
+                {/* Solo se ve en el celular, con el buscador plegado. */}
+                <button
+                  type="button"
+                  className="buscador-resumen"
+                  onClick={() => setBuscadorPlegado(false)}
+                  aria-label="Editar origen y destino"
+                >
+                  <span className="buscador-resumen-lugares">
+                    <span>🟢 {origenEtiqueta || origin}</span>
+                    <span>🔴 {destinoEtiqueta || destination}</span>
+                  </span>
+                  <span className="buscador-resumen-editar">Editar</span>
+                </button>
+
                 <button
                   type="button"
                   className="mi-ubicacion-btn"
